@@ -270,7 +270,11 @@ public:
         timeoutSeconds = 10
     };
 
+#if BEAST_MAC
+    MultiSocketTests () : UnitTest ("MultiSocket", "ripple", runManual)
+#else
     MultiSocketTests () : UnitTest ("MultiSocket", "ripple")
+#endif
     {
     }
 };

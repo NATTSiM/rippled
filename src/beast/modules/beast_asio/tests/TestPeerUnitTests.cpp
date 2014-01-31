@@ -43,7 +43,11 @@ public:
         timeoutSeconds = 10
     };
 
+#if BEAST_MAC
+    TestPeerUnitTests () : UnitTest ("TestPeer", "beast", runManual)
+#else
     TestPeerUnitTests () : UnitTest ("TestPeer", "beast")
+#endif
     {
     }
 };

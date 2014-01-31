@@ -384,7 +384,7 @@
 		B6FE8CEB145A0F1900B32547 /* libboost_program_options.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_program_options.dylib; path = usr/local/lib/libboost_program_options.dylib; sourceTree = SDKROOT; };
 		B6FE8D1614686A8500B32547 /* md5.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = md5.c; path = src/md5/md5.c; sourceTree = "<group>"; };
 		B6FE8D1714686A8500B32547 /* md5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = md5.h; path = src/md5/md5.h; sourceTree = "<group>"; };
-		B6FE8D4F14730AE900B32547 /* Policy Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "Policy Test"; path = policy_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6FE8D4F14730AE900B32547 /* policy_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = policy_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6FE8D5B14730B1A00B32547 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		B6FE8D5D14730B2200B32547 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = usr/lib/libssl.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -742,7 +742,7 @@
 				B6DF1CD11435ED910029A1B1 /* echo_server */,
 				B682887D143745F2002BA48B /* chat_client */,
 				B6CF181C1437C397009295BE /* echo_client */,
-				B6FE8D4F14730AE900B32547 /* Policy Test */,
+				B6FE8D4F14730AE900B32547 /* policy_test */,
 				B663884B1487D73200DDAE13 /* echo_server_tls */,
 				B6732458148FAEEB00FC2B04 /* fuzzing_server */,
 				B6732471148FB0FC00FC2B04 /* fuzzing_client */,
@@ -1205,7 +1205,7 @@
 			);
 			name = policy_test;
 			productName = "Policy Test";
-			productReference = B6FE8D4F14730AE900B32547 /* Policy Test */;
+			productReference = B6FE8D4F14730AE900B32547 /* policy_test */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
