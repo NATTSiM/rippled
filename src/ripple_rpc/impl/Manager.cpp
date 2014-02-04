@@ -22,6 +22,7 @@
 #include "../api/Manager.h"
 
 #include "DoPrint.h"
+#include "DoLedgerClosed.h"
 
 namespace ripple {
 namespace RPC {
@@ -34,7 +35,7 @@ public:
     Journal m_journal;
     Map m_map;
 
-    ManagerImp (Journal journal)
+    ManagerImp (Journal journal, NetworkOPs* netOps)
         : m_journal (journal)
     {
     }
@@ -67,6 +68,7 @@ std::unique_ptr <Manager> make_Manager (Journal journal)
     std::unique_ptr <Manager> m (std::make_unique <ManagerImp> (journal));
 
     m->add <DoPrint> ("print");
+    m->add <DoLedgerClosed> ("ledger_closed");
 
     return m;
 }

@@ -17,58 +17,38 @@
 */
 //==============================================================================
 
-#ifndef RIPPLE_RPC_REQUEST_H_INCLUDED
-#define RIPPLE_RPC_REQUEST_H_INCLUDED
-
-#include "../ripple/json/ripple_json.h"
-#include "../ripple/resource/ripple_resource.h"
-
-
 namespace ripple {
-
-class Application; // forward declare
-
 namespace RPC {
 
-struct Request
+class DoLedgerClosed
 {
-    explicit Request (Journal journal_,
-        std::string const& method_, Json::Value& params_,
-            Application& app_)
-        : journal (journal_)
-        , method (method_)
-        , params (params_)
-        , fee (Resource::feeReferenceRPC)
-        , app (app_)
-        , deprecated_mutex (app_.getMasterLock ())
+public:
+    void operator() (Request& req)
     {
+        // Make sure the master lock is closed
+        {
+            std::unique_lock<std::mutex> lock (Request::deprecated_mutex (req.deprecated_mutex));
+            if (!req.app.getOPs().getClosedLedger())
+            {
+                RPC::inject_error (rpcNO_CLOSED, req.result);
+                return;
+            }
+        }
+        
+        //masterLockHolder.unlock (); Deleted in DoPrint.h
+        Json::Value jvResult; // 
+
+        uint256 uLedger = &req.app.getOPs()->getClosedLedgerHash ();
+        
+        jvResult["ledger_index"]        = &req.app.getOPs()->getLedgerID (uLedger);
+        jvResult["ledger_hash"]         = uLedger.ToString ();
+        //jvResult["ledger_time"]       = uLedger.
+
+        req.result = jvResult;
+
+        //return jvResult;
     }
-    
-    typedef Application::ScopedLockType deprecated_mutex;
-    
-    // [in] The Journal for logging
-    Journal journal;
-
-    // [in] The JSON-RPC method
-    std::string method;
-
-    // [in] The complete JSON-RPC request
-    Json::Value params;
-
-    // [in, out] The resource cost for the command
-    Resource::Charge fee;
-
-    // [out] The JSON-RPC response
-    Json::Value result;
-
-    // [in] The Application instance
-    Application& app;
-
-private:
-    Request& operator= (Request const&);
 };
 
 }
 }
-
-#endif

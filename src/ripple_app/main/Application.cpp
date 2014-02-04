@@ -250,8 +250,6 @@ public:
         , m_siteFiles (SiteFiles::Manager::New (
             *this, LogPartition::getJournal <SiteFilesLog> ()))
 
-        , m_rpcManager (RPC::make_Manager (LogPartition::getJournal <RPCManagerLog> ()))
-
         , m_orderBookDB (*m_jobQueue)
 
         , m_pathRequests ( new PathRequests (
@@ -259,10 +257,12 @@ public:
 
         , m_ledgerMaster (LedgerMaster::New (
             *m_jobQueue, LogPartition::getJournal <LedgerMaster> ()))
-
+    
         // VFALCO NOTE Does NetworkOPs depend on LedgerMaster?
         , m_networkOPs (NetworkOPs::New (get_seconds_clock (), *m_ledgerMaster,
             *m_jobQueue, LogPartition::getJournal <NetworkOPsLog> ()))
+    
+        , m_rpcManager (RPC::make_Manager (LogPartition::getJournal <RPCManagerLog> ()))
 
         // VFALCO NOTE LocalCredentials starts the deprecated UNL service
         , m_deprecatedUNL (UniqueNodeList::New (*m_jobQueue))

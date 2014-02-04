@@ -363,9 +363,27 @@ void splitIpPort (const std::string& strIpPort, std::string& strIp, int& iPort)
 {
     std::vector<std::string>    vIpPort;
     boost::split (vIpPort, strIpPort, boost::is_any_of (" :"));
-
+    
     strIp   = vIpPort[0];
     iPort   = lexicalCastThrow <int> (vIpPort[1]);
+    
+    
+    /*
+    
+    try
+    {
+        strIp   = vIpPort[0];
+        iPort   = lexicalCastThrow <int> (vIpPort[1]);
+    }
+    catch (...)
+    {
+        WriteLog (lsFATAL, Peers) << "splitIpPort for string \""
+        << strIpPort << "\" gives us: v[0]=\""
+        << vIpPort[0] << "\" and v[1]=\""
+        << vIpPort[1] << "\"" << std::endl;
+    }
+     
+     */
 }
 
 void PeersImp::start ()
