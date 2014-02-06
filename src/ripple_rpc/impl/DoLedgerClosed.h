@@ -27,7 +27,7 @@ public:
     {
         // Make sure the master lock is closed
         {
-            std::unique_lock<std::mutex> lock (Request::deprecated_mutex (req.deprecated_mutex));
+            std::unique_lock<std::mutex> lock (req.deprecated_mutex);
             if (!req.app.getOPs().getClosedLedger())
             {
                 RPC::inject_error (rpcNO_CLOSED, req.result);
@@ -38,9 +38,9 @@ public:
         //masterLockHolder.unlock (); Deleted in DoPrint.h
         Json::Value jvResult; // 
 
-        uint256 uLedger = &req.app.getOPs()->getClosedLedgerHash ();
+        uint256 uLedger = &req.app.getOPs ().getClosedLedgerHash ();
         
-        jvResult["ledger_index"]        = &req.app.getOPs()->getLedgerID (uLedger);
+        jvResult["ledger_index"]        = &req.app.getOPs ().getLedgerID (uLedger);
         jvResult["ledger_hash"]         = uLedger.ToString ();
         //jvResult["ledger_time"]       = uLedger.
 

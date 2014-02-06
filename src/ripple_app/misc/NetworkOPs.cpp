@@ -500,7 +500,7 @@ void NetworkOPsImp::onDeadlineTimer (DeadlineTimer& timer)
 void NetworkOPsImp::processHeartbeatTimer ()
 {
     {
-        Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
         // VFALCO NOTE This is for diagnosing a crash on exit
         Application& app (getApp ());
@@ -803,7 +803,7 @@ void NetworkOPsImp::runTransactionQueue ()
             LoadEvent::autoptr ev = getApp().getJobQueue ().getLoadEventAP (jtTXN_PROC, "runTxnQ");
 
             {
-                Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+                std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
                 Transaction::pointer dbtx = getApp().getMasterTransaction ().fetch (txn->getID (), true);
                 assert (dbtx);
@@ -906,7 +906,7 @@ Transaction::pointer NetworkOPsImp::processTransactionCb (
     }
 
     {
-        Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
         bool didApply;
         TER r = m_ledgerMaster.doTransaction (trans->getSTransaction (),
@@ -1463,7 +1463,7 @@ void NetworkOPsImp::processTrustedProposal (LedgerProposal::pointer proposal,
         boost::shared_ptr<protocol::TMProposeSet> set, RippleAddress nodePublic, uint256 checkLedger, bool sigGood)
 {
     {
-        Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
         bool relay = true;
 
@@ -1552,7 +1552,7 @@ SHAMapAddNode NetworkOPsImp::gotTXData (const boost::shared_ptr<Peer>& peer, uin
     boost::shared_ptr<LedgerConsensus> consensus;
 
     {
-        Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
 
         consensus = mConsensus;
     }

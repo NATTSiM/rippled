@@ -1471,7 +1471,7 @@ void PeerImp::recvPropose (const boost::shared_ptr<protocol::TMProposeSet>& pack
     uint256 consensusLCL;
 
     {
-        Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
         consensusLCL = getApp().getOPs ().getConsensusLCL ();
     }
     LedgerProposal::pointer proposal = boost::make_shared<LedgerProposal> (
@@ -1504,7 +1504,7 @@ void PeerImp::recvHaveTxSet (protocol::TMHaveTransactionSet& packet)
         addTxSet (hash);
 
     {
-        Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
         if (!getApp().getOPs ().hasTXSet (shared_from_this (), hash, packet.status ()))
         {
             charge (Resource::feeUnwantedData);
@@ -2102,7 +2102,7 @@ void PeerImp::getLedger (protocol::TMGetLedger & packet)
         memcpy (txHash.begin (), packet.ledgerhash ().data (), 32);
 
         {
-            Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+            std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
             map = getApp().getOPs ().getTXMap (txHash);
         }
 
@@ -2431,7 +2431,7 @@ void PeerImp::recvLedger (const boost::shared_ptr<protocol::TMLedgerData>& packe
 
         bool doCharge = false;
         {
-            Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+            std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
             if (getApp().getOPs ().gotTXData (shared_from_this (), hash, nodeIDs, nodeData).isInvalid ())
                 doCharge = true;
         }

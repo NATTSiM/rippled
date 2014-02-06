@@ -45,7 +45,7 @@ private:
     typedef Json::Value (RPCHandler::*doFuncPtr) (
         Json::Value params,
         Resource::Charge& loadType,
-        Application::ScopedLockType& MasterLockHolder);
+        std::lock_guard <std::recursive_mutex>& MasterLockHolder);
 
     // VFALCO TODO Document these and give the enumeration a label.
     enum
@@ -62,7 +62,7 @@ private:
 
     boost::unordered_set <RippleAddress> parseAccountIds (const Json::Value& jvArray);
 
-    Json::Value transactionSign (Json::Value jvRequest, bool bSubmit, bool bFailHard, Application::ScopedLockType& mlh);
+    Json::Value transactionSign (Json::Value jvRequest, bool bSubmit, bool bFailHard, std::lock_guard <std::recursive_mutex>& mlh);
 
     Json::Value lookupLedger (Json::Value const& jvRequest, Ledger::pointer& lpLedger);
 
@@ -94,77 +94,77 @@ private:
         const int iIndex,
         const bool bStrict);
 
-    Json::Value doAccountCurrencies     (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountInfo           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountLines          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountOffers         (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountTx             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountTxSwitch       (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doAccountTxOld          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doBookOffers            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doBlackList             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doConnect               (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doConsensusInfo         (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doFeature               (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doFetchInfo             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doGetCounts             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doInternal              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedger                (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerAccept          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerCleaner         (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerClosed          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerCurrent         (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerEntry           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLedgerHeader          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLogLevel              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLogRotate             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doNicknameInfo          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doOwnerInfo             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doPathFind              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doPeers                 (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doPing                  (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doPrint                 (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doProfile               (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doProofCreate           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doProofSolve            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doProofVerify           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doRandom                (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doRipplePathFind        (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doSMS                   (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doServerInfo            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh); // for humans
-    Json::Value doServerState           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh); // for machines
-    Json::Value doSessionClose          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doSessionOpen           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doSign                  (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doStop                  (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doSubmit                (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doSubscribe             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doTransactionEntry      (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doTx                    (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doTxHistory             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlAdd                (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlDelete             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlFetch              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlList               (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlLoad               (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlNetwork            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlReset              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnlScore              (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doUnsubscribe           (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doValidationCreate      (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doValidationSeed        (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletAccounts        (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletLock            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletPropose         (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletSeed            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletUnlock          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doWalletVerify          (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
+    Json::Value doAccountCurrencies     (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountInfo           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountLines          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountOffers         (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountTx             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountTxSwitch       (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doAccountTxOld          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doBookOffers            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doBlackList             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doConnect               (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doConsensusInfo         (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doFeature               (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doFetchInfo             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doGetCounts             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doInternal              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedger                (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerAccept          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerCleaner         (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerClosed          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerCurrent         (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerEntry           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLedgerHeader          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLogLevel              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLogRotate             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doNicknameInfo          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doOwnerInfo             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doPathFind              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doPeers                 (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doPing                  (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doPrint                 (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doProfile               (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doProofCreate           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doProofSolve            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doProofVerify           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doRandom                (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doRipplePathFind        (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doSMS                   (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doServerInfo            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh); // for humans
+    Json::Value doServerState           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh); // for machines
+    Json::Value doSessionClose          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doSessionOpen           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doSign                  (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doStop                  (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doSubmit                (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doSubscribe             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doTransactionEntry      (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doTx                    (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doTxHistory             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlAdd                (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlDelete             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlFetch              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlList               (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlLoad               (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlNetwork            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlReset              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnlScore              (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doUnsubscribe           (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doValidationCreate      (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doValidationSeed        (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletAccounts        (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletLock            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletPropose         (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletSeed            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletUnlock          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doWalletVerify          (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
 
 #if ENABLE_INSECURE
-    Json::Value doDataDelete            (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doDataFetch             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doDataStore             (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
-    Json::Value doLogin                 (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh);
+    Json::Value doDataDelete            (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doDataFetch             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doDataStore             (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
+    Json::Value doLogin                 (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh);
 #endif
 
 private:

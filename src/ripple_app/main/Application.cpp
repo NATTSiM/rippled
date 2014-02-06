@@ -103,7 +103,7 @@ class ApplicationImp
 {
 public:
     Journal m_journal;
-    Application::LockType m_masterMutex;
+    std::recursive_mutex m_masterMutex;
 
     // These are not Stoppable-derived
     std::unique_ptr <NodeStore::Manager> m_nodeStoreManager;
@@ -398,7 +398,7 @@ public:
         return *m_nodeStore;
     }
 
-    Application::LockType& getMasterLock ()
+    std::recursive_mutex& getMasterLock ()
     {
         return m_masterMutex;
     }

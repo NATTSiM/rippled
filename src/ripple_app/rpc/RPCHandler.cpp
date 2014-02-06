@@ -163,7 +163,7 @@ static void autofill_fee (Json::Value& request,
 //             submit the tranaction
 //
 Json::Value RPCHandler::transactionSign (Json::Value params,
-    bool bSubmit, bool bFailHard, Application::ScopedLockType& mlh)
+    bool bSubmit, bool bFailHard, std::lock_guard <std::recursive_mutex>& mlh)
 {
     mlh.unlock();
     Json::Value jvResult;
@@ -700,7 +700,7 @@ Json::Value RPCHandler::accountFromString (Ledger::ref lrLedger, RippleAddress& 
     return Json::Value (Json::objectValue);
 }
 
-Json::Value RPCHandler::doAccountCurrencies (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountCurrencies (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     // Get the current ledger
@@ -770,7 +770,7 @@ Json::Value RPCHandler::doAccountCurrencies (Json::Value params, Resource::Charg
 //   ledger_hash : <ledger>
 //   ledger_index : <ledger_index>
 // }
-Json::Value RPCHandler::doAccountInfo (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountInfo (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -813,7 +813,7 @@ Json::Value RPCHandler::doAccountInfo (Json::Value params, Resource::Charge& loa
     return jvResult;
 }
 
-Json::Value RPCHandler::doBlackList (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doBlackList (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock();
     if (params.isMember("threshold"))
@@ -827,7 +827,7 @@ Json::Value RPCHandler::doBlackList (Json::Value params, Resource::Charge& loadT
 //   port: <number>
 // }
 // XXX Might allow domain for manual connections.
-Json::Value RPCHandler::doConnect (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doConnect (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (getConfig ().RUN_STANDALONE)
         return "cannot connect in standalone mode";
@@ -848,7 +848,7 @@ Json::Value RPCHandler::doConnect (Json::Value params, Resource::Charge& loadTyp
 // {
 //   key: <string>
 // }
-Json::Value RPCHandler::doDataDelete (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doDataDelete (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("key"))
         return RPC::missing_field_error ("key");
@@ -874,7 +874,7 @@ Json::Value RPCHandler::doDataDelete (Json::Value params, Resource::Charge& load
 // {
 //   key: <string>
 // }
-Json::Value RPCHandler::doDataFetch (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doDataFetch (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("key"))
         return RPC::missing_field_error ("key");
@@ -898,7 +898,7 @@ Json::Value RPCHandler::doDataFetch (Json::Value params, Resource::Charge& loadT
 //   key: <string>
 //   value: <string>
 // }
-Json::Value RPCHandler::doDataStore (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doDataStore (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("key")
         return RPC::missing_field_error ("key");
@@ -960,7 +960,7 @@ Json::Value RPCHandler::doNicknameInfo (Json::Value params)
 //   'account_index' : <index> // optional
 // }
 // XXX This would be better if it took the ledger.
-Json::Value RPCHandler::doOwnerInfo (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doOwnerInfo (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("account") && !params.isMember ("ident"))
         return RPC::missing_field_error ("account");
@@ -985,7 +985,7 @@ Json::Value RPCHandler::doOwnerInfo (Json::Value params, Resource::Charge& loadT
     return ret;
 }
 
-Json::Value RPCHandler::doPeers (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doPeers (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value jvResult (Json::objectValue);
 
@@ -996,12 +996,12 @@ Json::Value RPCHandler::doPeers (Json::Value, Resource::Charge& loadType, Applic
     return jvResult;
 }
 
-Json::Value RPCHandler::doPing (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doPing (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     return Json::Value (Json::objectValue);
 }
 
-Json::Value RPCHandler::doPrint (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doPrint (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1019,7 +1019,7 @@ Json::Value RPCHandler::doPrint (Json::Value params, Resource::Charge& loadType,
 // issuer is the offering account
 // --> submit: 'submit|true|false': defaults to false
 // Prior to running allow each to have a credit line of what they will be getting from the other account.
-Json::Value RPCHandler::doProfile (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doProfile (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     /* need to fix now that sharedOfferCreate is gone
     int             iArgs   = params.size();
@@ -1111,7 +1111,7 @@ Json::Value RPCHandler::doProfile (Json::Value params, Resource::Charge& loadTyp
 //   difficulty: <number>       // optional
 //   secret: <secret>           // optional
 // }
-Json::Value RPCHandler::doProofCreate (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doProofCreate (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     // XXX: Add ability to create proof with arbitrary time
@@ -1156,7 +1156,7 @@ Json::Value RPCHandler::doProofCreate (Json::Value params, Resource::Charge& loa
 // {
 //   token: <token>
 // }
-Json::Value RPCHandler::doProofSolve (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doProofSolve (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1186,7 +1186,7 @@ Json::Value RPCHandler::doProofSolve (Json::Value params, Resource::Charge& load
 //   difficulty: <number>       // optional
 //   secret: <secret>           // optional
 // }
-Json::Value RPCHandler::doProofVerify (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doProofVerify (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     // XXX Add ability to check proof against arbitrary time
@@ -1256,7 +1256,7 @@ Json::Value RPCHandler::doProofVerify (Json::Value params, Resource::Charge& loa
 //   ledger_hash : <ledger>
 //   ledger_index : <ledger_index>
 // }
-Json::Value RPCHandler::doAccountLines (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountLines (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1367,7 +1367,7 @@ static void offerAdder (Json::Value& jvLines, SLE::ref offer)
 //   ledger_hash : <ledger>
 //   ledger_index : <ledger_index>
 // }
-Json::Value RPCHandler::doAccountOffers (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountOffers (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1446,7 +1446,7 @@ inline uint160 const& neutral_issuer ()
 //   "limit" : integer,                  // Optional.
 //   "proof" : boolean                   // Defaults to false.
 // }
-Json::Value RPCHandler::doBookOffers (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doBookOffers (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1617,7 +1617,7 @@ Json::Value RPCHandler::doBookOffers (Json::Value params, Resource::Charge& load
 // {
 //   random: <uint256>
 // }
-Json::Value RPCHandler::doRandom (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doRandom (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     uint256         uRandom;
@@ -1638,7 +1638,7 @@ Json::Value RPCHandler::doRandom (Json::Value params, Resource::Charge& loadType
     }
 }
 
-Json::Value RPCHandler::doPathFind (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doPathFind (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Ledger::pointer lpLedger = mNetOps->getClosedLedger();
     masterLockHolder.unlock();
@@ -1683,7 +1683,7 @@ Json::Value RPCHandler::doPathFind (Json::Value params, Resource::Charge& loadTy
 }
 
 // This interface is deprecated.
-Json::Value RPCHandler::doRipplePathFind (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doRipplePathFind (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -1946,7 +1946,7 @@ Json::Value RPCHandler::doRipplePathFind (Json::Value params, Resource::Charge& 
 //   tx_json: <object>,
 //   secret: <secret>
 // }
-Json::Value RPCHandler::doSign (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doSign (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     loadType = Resource::feeHighBurdenRPC;
     bool bFailHard = params.isMember ("fail_hard") && params["fail_hard"].asBool ();
@@ -1957,7 +1957,7 @@ Json::Value RPCHandler::doSign (Json::Value params, Resource::Charge& loadType, 
 //   tx_json: <object>,
 //   secret: <secret>
 // }
-Json::Value RPCHandler::doSubmit (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doSubmit (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     loadType = Resource::feeMediumBurdenRPC;
 
@@ -2051,7 +2051,7 @@ Json::Value RPCHandler::doSubmit (Json::Value params, Resource::Charge& loadType
     }
 }
 
-Json::Value RPCHandler::doConsensusInfo (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doConsensusInfo (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value ret (Json::objectValue);
 
@@ -2060,7 +2060,7 @@ Json::Value RPCHandler::doConsensusInfo (Json::Value, Resource::Charge& loadType
     return ret;
 }
 
-Json::Value RPCHandler::doFetchInfo (Json::Value jvParams, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doFetchInfo (Json::Value jvParams, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -2077,7 +2077,7 @@ Json::Value RPCHandler::doFetchInfo (Json::Value jvParams, Resource::Charge& loa
     return ret;
 }
 
-Json::Value RPCHandler::doServerInfo (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doServerInfo (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value ret (Json::objectValue);
 
@@ -2086,7 +2086,7 @@ Json::Value RPCHandler::doServerInfo (Json::Value, Resource::Charge& loadType, A
     return ret;
 }
 
-Json::Value RPCHandler::doServerState (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doServerState (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value ret (Json::objectValue);
 
@@ -2098,7 +2098,7 @@ Json::Value RPCHandler::doServerState (Json::Value, Resource::Charge& loadType, 
 // {
 //   start: <index>
 // }
-Json::Value RPCHandler::doTxHistory (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doTxHistory (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     loadType = Resource::feeMediumBurdenRPC;
@@ -2140,7 +2140,7 @@ Json::Value RPCHandler::doTxHistory (Json::Value params, Resource::Charge& loadT
 // {
 //   transaction: <hex>
 // }
-Json::Value RPCHandler::doTx (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doTx (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -2208,7 +2208,7 @@ Json::Value RPCHandler::doTx (Json::Value params, Resource::Charge& loadType, Ap
     return rpcError (rpcNOT_IMPL);
 }
 
-Json::Value RPCHandler::doLedgerClosed (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerClosed (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     Json::Value jvResult;
@@ -2222,7 +2222,7 @@ Json::Value RPCHandler::doLedgerClosed (Json::Value, Resource::Charge& loadType,
     return jvResult;
 }
 
-Json::Value RPCHandler::doLedgerCurrent (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerCurrent (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     Json::Value jvResult;
@@ -2237,7 +2237,7 @@ Json::Value RPCHandler::doLedgerCurrent (Json::Value, Resource::Charge& loadType
 //    ledger: 'current' | 'closed' | <uint256> | <number>,  // optional
 //    full: true | false    // optional, defaults to false.
 // }
-Json::Value RPCHandler::doLedger (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedger (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     if (!params.isMember ("ledger") && !params.isMember ("ledger_hash") && !params.isMember ("ledger_index"))
@@ -2286,7 +2286,7 @@ Json::Value RPCHandler::doLedger (Json::Value params, Resource::Charge& loadType
 }
 
 // Temporary switching code until the old account_tx is removed
-Json::Value RPCHandler::doAccountTxSwitch (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountTxSwitch (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (params.isMember("offset") || params.isMember("count") || params.isMember("descending") ||
             params.isMember("ledger_max") || params.isMember("ledger_min"))
@@ -2304,7 +2304,7 @@ Json::Value RPCHandler::doAccountTxSwitch (Json::Value params, Resource::Charge&
 //   offset: integer,              // optional, defaults to 0
 //   limit: integer                // optional
 // }
-Json::Value RPCHandler::doAccountTxOld (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountTxOld (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -2465,7 +2465,7 @@ Json::Value RPCHandler::doAccountTxOld (Json::Value params, Resource::Charge& lo
 //   limit: integer,                 // optional
 //   marker: opaque                  // optional, resume previous query
 // }
-Json::Value RPCHandler::doAccountTx (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doAccountTx (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -2600,7 +2600,7 @@ Json::Value RPCHandler::doAccountTx (Json::Value params, Resource::Charge& loadT
 // }
 //
 // This command requires Config::ADMIN access because it makes no sense to ask an untrusted server for this.
-Json::Value RPCHandler::doValidationCreate (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doValidationCreate (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     RippleAddress   raSeed;
     Json::Value     obj (Json::objectValue);
@@ -2626,7 +2626,7 @@ Json::Value RPCHandler::doValidationCreate (Json::Value params, Resource::Charge
 // {
 //   secret: <string>
 // }
-Json::Value RPCHandler::doValidationSeed (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doValidationSeed (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value obj (Json::objectValue);
 
@@ -2697,7 +2697,7 @@ Json::Value RPCHandler::accounts (Ledger::ref lrLedger, const RippleAddress& naM
 //   ledger_hash : <ledger>
 //   ledger_index : <ledger_index>
 // }
-Json::Value RPCHandler::doWalletAccounts (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doWalletAccounts (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Ledger::pointer     lpLedger;
     Json::Value         jvResult    = lookupLedger (params, lpLedger);
@@ -2740,7 +2740,7 @@ Json::Value RPCHandler::doWalletAccounts (Json::Value params, Resource::Charge& 
     }
 }
 
-Json::Value RPCHandler::doLogRotate (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLogRotate (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     return LogSink::get()->rotateLog ();
@@ -2749,7 +2749,7 @@ Json::Value RPCHandler::doLogRotate (Json::Value, Resource::Charge& loadType, Ap
 // {
 //  passphrase: <string>
 // }
-Json::Value RPCHandler::doWalletPropose (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doWalletPropose (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -2781,7 +2781,7 @@ Json::Value RPCHandler::doWalletPropose (Json::Value params, Resource::Charge& l
 // {
 //   secret: <string>
 // }
-Json::Value RPCHandler::doWalletSeed (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doWalletSeed (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     RippleAddress   raSeed;
     bool            bSecret = params.isMember ("secret");
@@ -2820,7 +2820,7 @@ Json::Value RPCHandler::doWalletSeed (Json::Value params, Resource::Charge& load
 //   username: <string>,
 //   password: <string>
 // }
-Json::Value RPCHandler::doLogin (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLogin (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("username")
             || !params.isMember ("password"))
@@ -2858,7 +2858,7 @@ static void textTime (std::string& text, int& seconds, const char* unitName, int
         text += "s";
 }
 
-Json::Value RPCHandler::doFeature (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& mlh)
+Json::Value RPCHandler::doFeature (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& mlh)
 {
     if (!params.isMember ("feature"))
     {
@@ -2887,7 +2887,7 @@ Json::Value RPCHandler::doFeature (Json::Value params, Resource::Charge& loadTyp
 // {
 //   min_count: <number>  // optional, defaults to 10
 // }
-Json::Value RPCHandler::doGetCounts (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doGetCounts (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     int minCount = 10;
 
@@ -2940,7 +2940,7 @@ Json::Value RPCHandler::doGetCounts (Json::Value params, Resource::Charge& loadT
     return ret;
 }
 
-Json::Value RPCHandler::doLogLevel (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLogLevel (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     // log_level
     if (!params.isMember ("severity"))
@@ -2993,7 +2993,7 @@ Json::Value RPCHandler::doLogLevel (Json::Value params, Resource::Charge& loadTy
 //   node: <domain>|<node_public>,
 //   comment: <comment>             // optional
 // }
-Json::Value RPCHandler::doUnlAdd (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlAdd (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     std::string strNode     = params.isMember ("node") ? params["node"].asString () : "";
     std::string strComment  = params.isMember ("comment") ? params["comment"].asString () : "";
@@ -3017,7 +3017,7 @@ Json::Value RPCHandler::doUnlAdd (Json::Value params, Resource::Charge& loadType
 // {
 //   node: <domain>|<public_key>
 // }
-Json::Value RPCHandler::doUnlDelete (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlDelete (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (!params.isMember ("node"))
         return rpcError (rpcINVALID_PARAMS);
@@ -3040,7 +3040,7 @@ Json::Value RPCHandler::doUnlDelete (Json::Value params, Resource::Charge& loadT
     }
 }
 
-Json::Value RPCHandler::doUnlList (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlList (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value obj (Json::objectValue);
 
@@ -3050,7 +3050,7 @@ Json::Value RPCHandler::doUnlList (Json::Value, Resource::Charge& loadType, Appl
 }
 
 // Populate the UNL from a local validators.txt file.
-Json::Value RPCHandler::doUnlLoad (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlLoad (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     if (getConfig ().VALIDATORS_FILE.empty () || !getApp().getUNL ().nodeLoad (getConfig ().VALIDATORS_FILE))
     {
@@ -3062,7 +3062,7 @@ Json::Value RPCHandler::doUnlLoad (Json::Value, Resource::Charge& loadType, Appl
 
 
 // Populate the UNL from ripple.com's validators.txt file.
-Json::Value RPCHandler::doUnlNetwork (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlNetwork (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     getApp().getUNL ().nodeNetwork ();
 
@@ -3070,7 +3070,7 @@ Json::Value RPCHandler::doUnlNetwork (Json::Value params, Resource::Charge& load
 }
 
 // unl_reset
-Json::Value RPCHandler::doUnlReset (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlReset (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     getApp().getUNL ().nodeReset ();
 
@@ -3078,14 +3078,14 @@ Json::Value RPCHandler::doUnlReset (Json::Value params, Resource::Charge& loadTy
 }
 
 // unl_score
-Json::Value RPCHandler::doUnlScore (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnlScore (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     getApp().getUNL ().nodeScore ();
 
     return "scoring requested";
 }
 
-Json::Value RPCHandler::doSMS (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doSMS (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
     if (!params.isMember ("text"))
@@ -3095,14 +3095,14 @@ Json::Value RPCHandler::doSMS (Json::Value params, Resource::Charge& loadType, A
 
     return "sms dispatched";
 }
-Json::Value RPCHandler::doStop (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doStop (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     getApp().signalStop ();
 
     return SYSTEM_NAME " server stopping";
 }
 
-Json::Value RPCHandler::doLedgerAccept (Json::Value, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerAccept (Json::Value, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     Json::Value jvResult;
 
@@ -3120,7 +3120,7 @@ Json::Value RPCHandler::doLedgerAccept (Json::Value, Resource::Charge& loadType,
     return jvResult;
 }
 
-Json::Value RPCHandler::doLedgerCleaner (Json::Value parameters, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerCleaner (Json::Value parameters, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock();
     getApp().getLedgerMaster().doLedgerCleaner (parameters);
@@ -3132,7 +3132,7 @@ Json::Value RPCHandler::doLedgerCleaner (Json::Value parameters, Resource::Charg
 //   ledger_index : <ledger_index>
 // }
 // XXX In this case, not specify either ledger does not mean ledger current. It means any ledger.
-Json::Value RPCHandler::doTransactionEntry (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doTransactionEntry (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -3340,7 +3340,7 @@ Json::Value RPCHandler::lookupLedger (Json::Value const& params, Ledger::pointer
 //   ledger_index : <ledger_index>
 //   ...
 // }
-Json::Value RPCHandler::doLedgerEntry (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerEntry (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -3545,7 +3545,7 @@ Json::Value RPCHandler::doLedgerEntry (Json::Value params, Resource::Charge& loa
 //   ledger_hash : <ledger>
 //   ledger_index : <ledger_index>
 // }
-Json::Value RPCHandler::doLedgerHeader (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doLedgerHeader (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     masterLockHolder.unlock ();
 
@@ -3589,7 +3589,7 @@ boost::unordered_set<RippleAddress> RPCHandler::parseAccountIds (const Json::Val
     return usnaResult;
 }
 
-Json::Value RPCHandler::doSubscribe (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doSubscribe (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     // FIXME: This needs to release the master lock immediately
     // Subscriptions need to be protected by their own lock
@@ -3894,7 +3894,7 @@ Json::Value RPCHandler::doSubscribe (Json::Value params, Resource::Charge& loadT
 }
 
 // FIXME: This leaks RPCSub objects for JSON-RPC.  Shouldn't matter for anyone sane.
-Json::Value RPCHandler::doUnsubscribe (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doUnsubscribe (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     InfoSub::pointer ispSub;
     Json::Value jvResult (Json::objectValue);
@@ -4116,7 +4116,7 @@ Json::Value RPCHandler::doRpcCommand (const std::string& strMethod, Json::Value 
     return logRPCError (jvResult);
 }
 
-Json::Value RPCHandler::doInternal (Json::Value params, Resource::Charge& loadType, Application::ScopedLockType& masterLockHolder)
+Json::Value RPCHandler::doInternal (Json::Value params, Resource::Charge& loadType, std::lock_guard <std::recursive_mutex>& masterLockHolder)
 {
     // Used for debug or special-purpose RPC commands
     if (!params.isMember ("internal_command"))
@@ -4243,7 +4243,7 @@ Json::Value RPCHandler::doCommand (const Json::Value& params, int iRole, Resourc
     }
 
     {
-        Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
         if ((commandsA[i].iOptions & optNetwork) && (mNetOps->getOperatingMode () < NetworkOPs::omSYNCING))
         {

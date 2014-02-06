@@ -44,7 +44,7 @@ struct Request
     {
     }
     
-    typedef Application::ScopedLockType deprecated_mutex;
+    typedef std::lock_guard <std::recursive_mutex> lock_guard;
     
     // [in] The Journal for logging
     Journal journal;
@@ -63,6 +63,8 @@ struct Request
 
     // [in] The Application instance
     Application& app;
+    
+    std::recursive_mutex& deprecated_mutex;
 
 private:
     Request& operator= (Request const&);

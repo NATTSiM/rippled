@@ -70,10 +70,10 @@ public:
 
         other things
     */
-    typedef RippleRecursiveMutex LockType;
-    typedef LockType::ScopedLockType ScopedLockType;
+    //typedef RippleRecursiveMutex LockType;
+    //typedef LockType::ScopedLockType ScopedLockType;
 
-    virtual LockType& getMasterLock () = 0;
+    virtual std::recursive_mutex& getMasterLock () = 0;
 
 public:
     Application ();

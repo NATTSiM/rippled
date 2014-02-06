@@ -852,7 +852,7 @@ private:
                 ->getLedgerSeq (), set);
 
         {
-            Application::ScopedLockType lock 
+            std::lock_guard <std::recursive_mutex> lock 
                 (getApp ().getMasterLock (), __FILE__, __LINE__);
 
             assert (set->getHash () == mOurPosition->getCurrentHash ());

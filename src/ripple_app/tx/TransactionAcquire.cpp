@@ -46,7 +46,7 @@ TransactionAcquire::~TransactionAcquire ()
 static void TACompletionHandler (uint256 hash, SHAMap::pointer map)
 {
     {
-        Application::ScopedLockType lock (getApp ().getMasterLock (), __FILE__, __LINE__);
+        std::lock_guard <std::recursive_mutex> lock (getApp ().getMasterLock (), __FILE__, __LINE__);
 
         getApp().getOPs ().mapComplete (hash, map);
 
@@ -82,7 +82,7 @@ void TransactionAcquire::onTimer (bool progress, ScopedLockType& psl)
         WriteLog (lsWARNING, TransactionAcquire) << "Ten timeouts on TX set " << getHash ();
         psl.unlock();
         {
-            Application::ScopedLockType lock (getApp().getMasterLock (), __FILE__, __LINE__);
+            std::lock_guard <std::recursive_mutex> lock (getApp().getMasterLock (), __FILE__, __LINE__);
 
             if (getApp().getOPs ().stillNeedTXSet (mHash))
             {
