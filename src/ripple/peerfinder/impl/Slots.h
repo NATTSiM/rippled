@@ -179,16 +179,8 @@ public:
     }
 
     /** Determines if an outbound slot is available and assigns it */
-    HandshakeAction grabOutboundSlot(bool self, bool fixed, 
-        bool available, bool cluster)
+    HandshakeAction grabOutboundSlot(bool fixed,  bool available, bool cluster)
     {
-        // If this is a connection to ourselves, we bail.
-        if (self)
-        {
-            ++m_closingCount;
-            return doClose;
-        }
-
         // Fixed and cluster peers are tracked but are not subject
         // to limits and don't consume slots. They are always allowed
         // to connect.
@@ -216,16 +208,8 @@ public:
     }
 
     /** Determines if an inbound slot is available and assigns it */
-    HandshakeAction grabInboundSlot(bool self, bool fixed, 
-        bool available, bool cluster)
+    HandshakeAction grabInboundSlot(bool fixed, bool available, bool cluster)
     {
-        // If this is a connection to ourselves, we bail.
-        if (self)
-        {
-            ++m_closingCount;
-            return doClose;
-        }
-
         // Fixed and cluster peers are tracked but are not subject
         // to limits and don't consume slots. They are always allowed
         // to connect.
@@ -256,7 +240,7 @@ public:
         Returns the disposition for this peer, including whether we should
         activate the connection, issue a redirect or simply close it.
     */
-    HandshakeAction onPeerHandshake (bool inbound, bool self, bool fixed, bool cluster)
+    HandshakeAction onPeerHandshake (bool inbound, bool fixed, bool cluster)
     {
         if (cluster)
             return doActivate;
@@ -267,16 +251,14 @@ public:
             consistency_check (m_acceptCount > 0);
             --m_acceptCount;
 
-            return grabInboundSlot (self, fixed, 
-                inboundSlotsFree () > 0, cluster);
+            return grabInboundSlot (fixed, inboundSlotsFree () > 0, cluster);
         }
 
         // Must not be zero!
         consistency_check (m_connectCount > 0);
         --m_connectCount;
 
-        return grabOutboundSlot (self, fixed, 
-            outboundSlotsFree () > 0, cluster);
+        return grabOutboundSlot (fixed, outboundSlotsFree () > 0, cluster);
     }
 
     /** Called when a peer socket is closed gracefully. */
@@ -390,12 +372,13 @@ public:
     /** Output statistics. */
     void onWrite (PropertyStream::Map& map)
     {
-        map ["accept"]  = acceptCount();
-        map ["connect"] = connectCount();
-        map ["close"]   = closingCount();
-        map ["in"]      << inboundActive() << "/" << inboundSlots();
-        map ["out"]     << outboundActive() << "/" << outboundSlots();
-        map ["fixed"]   = fixedPeers();
+        map ["accept"]  = acceptCount ();
+        map ["connect"] = connectCount ();
+        map ["close"]   = closingCount ();
+        map ["in"]      << inboundActive () << "/" << inboundSlots ();
+        map ["out"]     << outboundActive () << "/" << outboundSlots ();
+        map ["fixed"]   = fixedPeers ();
+        map ["cluster"] = clusterPeers ();
     }
 
     /** Records the state for diagnostics. */
@@ -403,8 +386,8 @@ public:
     {
         std::stringstream ss;
         ss <<
-            outboundActive() << "/" << outboundSlots() << " out, " <<
-            inboundActive() << "/" << inboundSlots() << " in, " <<
+            outboundActive() << "/" << outboundSlots () << " out, " <<
+            inboundActive() << "/" << inboundSlots () << " in, " <<
             connectCount() << " connecting, " <<
             closingCount() << " closing"
             ;

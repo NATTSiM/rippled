@@ -60,7 +60,6 @@ using namespace beast;
 
 #  include "impl/Tuning.h"
 # include "impl/Checker.h"
-# include "impl/Resolver.h"
 #include "impl/CheckerAdapter.h"
 #   include "impl/Sorts.h"
 #  include "impl/Giveaways.h"
@@ -82,7 +81,6 @@ using namespace beast;
 #include "impl/Endpoint.cpp"
 #include "impl/Livecache.cpp"
 #include "impl/Manager.cpp"
-#include "impl/Resolver.cpp"
 #include "impl/SourceStrings.cpp"
 
 //#include "sim/sync_timer.h"

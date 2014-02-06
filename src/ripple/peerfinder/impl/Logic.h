@@ -419,8 +419,8 @@ public:
                     "Logic connect " << addrs.size () << " live " <<
                     ((addrs.size () > 1) ? "endpoints" : "endpoint");
                 m_callback.connectPeers (addrs);
+                return;
             }
-            return;
         }
 
         /*  Stage #2 Bootcache Fetch
@@ -930,26 +930,22 @@ public:
             peer.state() == Peer::stateConnected);
         // Mark cluster peers as necessary
         peer.cluster (inCluster);        
-        // Check for self connect by public key
-        bool const self (state->keys.find (key) != state->keys.end());
-        // Determine what action to take
-        HandshakeAction const action (
-            state->slots.onPeerHandshake (peer.inbound(), self, peer.fixed(), peer.cluster()));
-        // VFALCO NOTE this is a bit messy the way slots takes the
-        //             'self' bool and returns the action.
-        if (self)
-        {
-            if (m_journal.debug) m_journal.debug << leftw (18) <<
-                "Logic dropping " << remote_address <<
-                " as self key";
-        }
+
+        // We track connections by their public key to allow us to deterministically
+        // detect duplicates even for multi-homed servers.
+        HandshakeAction action (doClose);
+
+        // If the public key of the server is on our list, it means that we already
+        // have a connection to that server, so we don't even need to bother with
+        // attempting to assign a slot.
+        if (state->keys.find (key) == state->keys.end())
+            action = state->slots.onPeerHandshake (
+                peer.inbound(), peer.fixed(), peer.cluster());
+
         // Pass address metadata to bootcache
         if (peer.outbound())
             state->bootcache.onConnectionHandshake (
                 remote_address, action);
-        //
-        // VFALCO TODO Check for duplicate connections!!!!
-        //
         if (action == doActivate)
         {
             // Track the public key
@@ -1011,7 +1007,7 @@ public:
             {
                 // Update slots
                 state->slots.onPeerClosed (peer.inbound (), false, 
-                    peer.cluster (), peer.fixed ());
+                    peer.fixed (), peer.cluster ());
                 if (peer.outbound())
                 {
                     state->bootcache.onConnectionFailure (remote_address);
@@ -1241,9 +1237,13 @@ public:
             PropertyStream::Map item (set);
             Peer const& peer (iter->second);
             item ["local_address"]   = to_string (peer.local_address ());
-            item ["remote_address"]  = to_string (peer.remote_address ());
+            item ["remote_address"]   = to_string (peer.remote_address ());
             if (peer.inbound())
                 item ["inbound"]    = "yes";
+            if (peer.fixed())
+                item ["fixed"]      = "yes";
+            if (peer.cluster())
+                item ["cluster"]    = "yes";
             switch (peer.state())
             {
             case Peer::stateAccept:

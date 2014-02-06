@@ -1455,9 +1455,6 @@
     <ClCompile Include="..\..\src\ripple\peerfinder\impl\Manager.cpp">
       <Filter>[1] Ripple\peerfinder\impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ripple\peerfinder\impl\Resolver.cpp">
-      <Filter>[1] Ripple\peerfinder\impl</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ripple\peerfinder\impl\SourceStrings.cpp">
       <Filter>[1] Ripple\peerfinder\impl</Filter>
     </ClCompile>
@@ -2953,9 +2950,6 @@
       <Filter>[1] Ripple\peerfinder\impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Reporting.h">
-      <Filter>[1] Ripple\peerfinder\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ripple\peerfinder\impl\Resolver.h">
       <Filter>[1] Ripple\peerfinder\impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Seen.h">

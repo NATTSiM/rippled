@@ -127,12 +127,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\src\ripple\peerfinder\impl\Resolver.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\src\ripple\peerfinder\impl\SourceStrings.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -2253,7 +2247,6 @@
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Peer.h" />
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\PrivateTypes.h" />
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Reporting.h" />
-    <ClInclude Include="..\..\src\ripple\peerfinder\impl\Resolver.h" />
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Seen.h" />
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Slots.h" />
     <ClInclude Include="..\..\src\ripple\peerfinder\impl\Sorts.h" />
