@@ -25,6 +25,7 @@ class DoLedgerClosed
 public:
     void operator() (Request& req)
     {
+        /*
         // Make sure the master lock is closed
         {
             std::unique_lock<std::mutex> lock (req.deprecated_mutex);
@@ -47,6 +48,7 @@ public:
         req.result = jvResult;
 
         //return jvResult;
+         */
     }
 };
 

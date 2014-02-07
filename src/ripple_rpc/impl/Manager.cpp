@@ -68,7 +68,7 @@ std::unique_ptr <Manager> make_Manager (Journal journal)
     std::unique_ptr <Manager> m (std::make_unique <ManagerImp> (journal));
 
     m->add <DoPrint> ("print");
-    m->add <DoLedgerClosed> ("ledger_closed");
+    //m->add <DoLedgerClosed> ("ledger_closed");
 
     return m;
 }
